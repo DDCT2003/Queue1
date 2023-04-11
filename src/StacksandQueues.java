@@ -24,6 +24,7 @@ public class StacksandQueues extends JFrame {
     private JButton mostrarHistorialButton;
     private JButton consultarÚltimoProcesoButton;
     private JTextArea Historialtext;
+    private JButton eliminarHistorialButton;
     private int Quantum1=10;
     private int time=0;
     private int conmutaciones=0;
@@ -32,7 +33,13 @@ public class StacksandQueues extends JFrame {
         setContentPane(Ingreso);
         Queue<Proceso> proceso = new LinkedList<>();
         Stack<Proceso> Stack1= new Stack<>();
-
+        Stack<Proceso> Stackaux = new Stack<>();
+        Stack1.push(new Proceso("P6","1235325235",55));
+        Stack1.push(new Proceso("P5","1725235325",45));
+        Stack1.push(new Proceso("P4","1732523532",15));
+        Stack1.push(new Proceso("P3","1545235235",50));
+        Stack1.push(new Proceso("P2","1724423423",40));
+        Stack1.push(new Proceso("P1","1724051592",20));
         imprimirDatosEstudianteButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -43,32 +50,34 @@ public class StacksandQueues extends JFrame {
         imprimirDatosButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                Datosquemados.setText(" ");
+                if (!proceso.isEmpty()){
+                    while(proceso.size()>0){
+                       Stackaux.push(proceso.poll());
 
 
-                Stack1.push(new Proceso("P6","1235325235",55));
-                Stack1.push(new Proceso("P5","1725235325",45));
-                Stack1.push(new Proceso("P4","1732523532",15));
-                Stack1.push(new Proceso("P3","1545235235",50));
-                Stack1.push(new Proceso("P2","1724423423",40));
-                Stack1.push(new Proceso("P1","1724051592",20));
-                Datosquemados.setText(Stack1.peek().toString());
-                proceso.add(Stack1.pop());
-                Datosquemados.setText(Datosquemados.getText()+"\n"+Stack1.peek().toString());
-                proceso.add(Stack1.pop());
-                Datosquemados.setText(Datosquemados.getText()+"\n"+Stack1.peek().toString());
-                proceso.add(Stack1.pop());
-                Datosquemados.setText(Datosquemados.getText()+"\n"+Stack1.peek().toString());
-                proceso.add(Stack1.pop());
-                Datosquemados.setText(Datosquemados.getText()+"\n"+Stack1.peek().toString());
-                proceso.add(Stack1.pop());
-                Datosquemados.setText(Datosquemados.getText()+"\n"+Stack1.peek().toString());
-                proceso.add(Stack1.pop());
+                    }
+                    while(!Stackaux.isEmpty()){
+                        Stack1.push(Stackaux.pop());
+                    }
+                }
+
+
+
+
+                if (!Stack1.isEmpty()){
+                    while(Stack1.size()>0){
+                        Datosquemados.setText((Datosquemados.getText()+"\n"+Stack1.peek().toString()));
+                        proceso.add(Stack1.pop());
+                    }
+                }
 
             }
         });
         Ingresar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                Datosingresados.setText(" ");
                 Stack1.push(new Proceso(numtext.getText(), idtext.getText(),Integer.parseInt(timetext.getText())));
                 Datosingresados.setText(Datosquemados.getText()+ "\n"+Stack1.peek().toString());
                 Datosquemados.setText(Datosquemados.getText()+"\n"+Stack1.peek().toString());
@@ -89,6 +98,7 @@ public class StacksandQueues extends JFrame {
                 RoundRobinText.setText("");
                 time=0;
                 conmutaciones =0;
+                RoundRobinText.setText("");
                while(!proceso.isEmpty()){
                    RoundRobinText.setText(RoundRobinText.getText()+"\n"+"Tiempo: "+ time +": "+proceso.peek().getNum()+" entra a ejecución.");
                    //proceso.peek().setTime(proceso.peek().getTime()-Quantum1);
@@ -125,16 +135,55 @@ public class StacksandQueues extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Historialtext.setText("Historial de procesos terminados:");
-                while(Stack1.size()>0){
-                    Historialtext.setText(Historialtext.getText()+"\n"+"Num: "+ Stack1.peek().getNum()+"\nCédula: "+Stack1.peek().getId() );
-                    proceso.add(Stack1.pop());
+                if(!Stack1.isEmpty()) {
+                    while (Stack1.size() > 0) {
+                        Historialtext.setText(Historialtext.getText() + "\n" + "Num: " + Stack1.peek().getNum() + "\nCédula: " + Stack1.peek().getId());
+                        Stackaux.push(Stack1.pop());
+                    }
+                } else if(!proceso.isEmpty()) {
+                    while (proceso.size() > 0) {
+                        Historialtext.setText(Historialtext.getText() + "\n" + "Num: " + proceso.peek().getNum() + "\nCédula: " + proceso.peek().getId());
+                        Stack1.push(proceso.poll());
+                    }} else if (!Stackaux.isEmpty()){
+                    while(Stackaux.size()>0){
+                    Stack1.push(Stackaux.pop());}
+                    while(Stack1.size()>0){
+                        Historialtext.setText(Historialtext.getText() + "\n" + "Num: " + Stack1.peek().getNum() + "\nCédula: " + Stack1.peek().getId());
+                        Stackaux.push(Stack1.pop());
+                    }
+                    }
+
+                else {
+                    Historialtext.setText("No hay procesos por mostrar.");
                 }
-            }
+                }
+
         });
         consultarÚltimoProcesoButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Historialtext.setText(proceso.peek().getNum()+"\n"+proceso.peek().getId());
+                if(!proceso.isEmpty()) {
+                    Historialtext.setText("Num: "+proceso.peek().getNum() + "\nCédula: " + proceso.peek().getId());
+                }else if(!Stack1.isEmpty()){
+                    Historialtext.setText("Num: "+Stack1.peek().getNum()+ "\nCédula: "+ Stack1.peek().getId());
+                }else if(!Stackaux.isEmpty()){
+                    while(Stackaux.size()>0){
+                        Stack1.push(Stackaux.pop());}
+                    Historialtext.setText("Num: "+Stack1.peek().getNum()+ "\nCédula: "+ Stack1.peek().getId());
+                }else{
+                    Historialtext.setText("No hay procesos por mostrar.");
+                }
+            }
+        });
+        eliminarHistorialButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                proceso.clear();
+                Stack1.clear();
+                Stackaux.clear();
+                Historialtext.setText("");
+                Datosquemados.setText("");
+                Datosingresados.setText("");
             }
         });
     }
