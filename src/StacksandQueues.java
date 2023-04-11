@@ -34,12 +34,12 @@ public class StacksandQueues extends JFrame {
         Queue<Proceso> proceso = new LinkedList<>();
         Stack<Proceso> Stack1= new Stack<>();
         Stack<Proceso> Stackaux = new Stack<>();
-        Stack1.push(new Proceso("P6","1235325235",55));
+   /*    Stack1.push(new Proceso("P6","1235325235",100));
         Stack1.push(new Proceso("P5","1725235325",45));
-        Stack1.push(new Proceso("P4","1732523532",15));
-        Stack1.push(new Proceso("P3","1545235235",50));
-        Stack1.push(new Proceso("P2","1724423423",40));
-        Stack1.push(new Proceso("P1","1724051592",20));
+        Stack1.push(new Proceso("P4","1732523532",15));*/
+        Stack1.push(new Proceso("P3","1545235235",40));
+        Stack1.push(new Proceso("P2","1724423423",15));
+        Stack1.push(new Proceso("P1","1724051592",100));
         imprimirDatosEstudianteButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -107,15 +107,21 @@ public class StacksandQueues extends JFrame {
                        proceso.peek().setTime(0);
                        RoundRobinText.setText(RoundRobinText.getText()+"\n"+"Tiempo: "+ time +": "+proceso.peek().getNum()+" termina ejecución.");
                        Stack1.push(proceso.poll());
-                   }else if(proceso.size()<1) {
+                   }else if(proceso.size()==1) {
+                       while (proceso.size()>0){
                        time= time+Quantum1;
                        proceso.peek().setTime(proceso.peek().getTime()-Quantum1);
-
-                       RoundRobinText.setText(RoundRobinText.getText()+"\n"+"Tiempo: "+ time +": "+proceso.peek().getNum()+
-                               "Continua ejecutandose. Pendiente por ejecutar: "+proceso.peek().getTime());
-                       proceso.add(proceso.poll());
-
-                   }
+                        if (proceso.peek().getTime()<=Quantum1){
+                            proceso.peek().setTime(0);
+                            RoundRobinText.setText(RoundRobinText.getText()+"\n"+"Tiempo: "+ time +": "+proceso.peek().getNum()+" termina ejecución.");
+                            Stack1.push(proceso.poll());
+                        }else {
+                            time = time+Quantum1;
+                        RoundRobinText.setText(RoundRobinText.getText() + "\n" + "Tiempo: " + time + ": " + proceso.peek().getNum() +
+                        " Continua ejecutandose. Pendiente por ejecutar: " + proceso.peek().getTime());
+                        proceso.add(proceso.poll());
+                              }
+                   }}
                    else{
                            time= time+Quantum1;
                            proceso.peek().setTime(proceso.peek().getTime()-Quantum1);
